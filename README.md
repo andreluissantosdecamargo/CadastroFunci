@@ -1,29 +1,29 @@
-# Cadastro de Funcionários - CRUD
+# 📋 Cadastro de Funcionários - CRUD
 
-Este é um projeto de exemplo de um sistema CRUD (Criar, Ler, Atualizar e Deletar) para gerenciar o cadastro de funcionários, utilizando Node.js e MySQL.
+Este é um projeto de exemplo de um sistema **CRUD** (Criar, Ler, Atualizar e Deletar) para gerenciar o cadastro de funcionários, utilizando **Node.js** e **MySQL**.
 
-## Tecnologias Utilizadas
+## 🛠 Tecnologias Utilizadas
 
-- Node.js
-- Express
-- MySQL
-- JavaScript (Frontend)
-- HTML/CSS
+- **Node.js**
+- **Express**
+- **MySQL**
+- **JavaScript** (Frontend)
+- **HTML/CSS**
 
-## Configuração do Ambiente
+## ⚙️ Configuração do Ambiente
 
 Siga as etapas abaixo para configurar o ambiente:
 
-### 1. Clonar o Repositório
+### 1. Clone o Repositório
 
 Clone este repositório em sua máquina local:
 
 ```bash
 git clone https://github.com/andreluissantosdecamargo/CadastroFunci.git
-cd cadastro-funcionarios
+cd CadastroFunci
 ```
 
-### 2. Instalar Dependências
+### 2. Instale as Dependências
 
 Instale as dependências necessárias do projeto:
 
@@ -31,15 +31,15 @@ Instale as dependências necessárias do projeto:
 npm install
 ```
 
-### 3. Configurar o Banco de Dados
+### 3. Configure o Banco de Dados
 
-1. Abra o MySQL e crie um novo banco de dados:
+1. **Crie um Novo Banco de Dados** no MySQL:
 
    ```sql
    CREATE DATABASE cadastro;
    ```
 
-2. Crie uma tabela chamada `funcionarios` com a seguinte estrutura:
+2. **Crie a Tabela** chamada `funcionarios` com a seguinte estrutura:
 
    ```sql
    CREATE TABLE funcionarios (
@@ -50,7 +50,7 @@ npm install
    );
    ```
 
-### 4. Configurar Conexão com o Banco de Dados
+### 4. Configure a Conexão com o Banco de Dados
 
 Edite o arquivo `db.js` para configurar sua conexão com o MySQL. Certifique-se de alterar as credenciais de acesso (`host`, `user`, `password` e `database`) conforme necessário.
 
@@ -72,7 +72,7 @@ connection.connect(err => {
 module.exports = connection;
 ```
 
-### 5. Iniciar o Servidor
+### 5. Inicie o Servidor
 
 Inicie o servidor Node.js:
 
@@ -80,20 +80,29 @@ Inicie o servidor Node.js:
 node server.js
 ```
 
-Você deverá ver a mensagem `Servidor rodando na porta 3000` e `Conectado ao banco de dados MySQL!`.
+Você deverá ver a mensagem:
 
-### 6. Acessar a Aplicação
+```
+Servidor rodando na porta 3000
+Conectado ao banco de dados MySQL!
+```
 
-Abra seu navegador e vá para `http://localhost:3000`.
+### 6. Acesse a Aplicação
 
-### 7. Testar as Funcionalidades
+Abra seu navegador e vá para:
+
+```
+http://localhost:3000
+```
+
+### 7. Teste as Funcionalidades
 
 1. **Adicionar Funcionário**: Clique em "Incluir", preencha os dados e salve.
 2. **Visualizar Funcionários**: Veja a lista de funcionários cadastrados.
 3. **Editar Funcionário**: Clique no ícone de editar, faça as alterações e salve.
 4. **Excluir Funcionário**: Clique no ícone de excluir e confirme a ação.
 
-### 8. Verificar no MySQL
+### 8. Verifique no MySQL
 
 Para verificar se as operações foram realizadas corretamente, acesse o MySQL e execute:
 
@@ -101,3 +110,9 @@ Para verificar se as operações foram realizadas corretamente, acesse o MySQL e
 USE cadastro;
 SELECT * FROM funcionarios;
 ```
+
+## 📌 Observações Finais
+
+- Certifique-se de ter o **MySQL** instalado e em execução.
+- O projeto utiliza o **localStorage** para armazenar dados no lado do cliente, mas todos os dados são gerenciados via MySQL no backend.
+- Sinta-se à vontade para modificar o projeto de acordo com suas necessidades e adicione mais funcionalidades!
