@@ -1,52 +1,40 @@
-const modal = document.querySelector('.modal-container')
-const tbody = document.querySelector('tbody')
-const sNome = document.querySelector('#m-nome')
-const sFuncao = document.querySelector('#m-funcao')
-const sSalario = document.querySelector('#m-salario')
-const btnSalvar = document.querySelector('#btnSalvar')
+const modal = document.querySelector('.modal-container');
+const tbody = document.querySelector('tbody');
+const sNome = document.querySelector('#m-nome');
+const sFuncao = document.querySelector('#m-funcao');
+const sSalario = document.querySelector('#m-salario');
+const btnSalvar = document.querySelector('#btnSalvar');
 
-let itens
-let id
+let itens = [];
+let id;
 
-// Função para abrir o modal
+// Função para abrir o modal, podendo ser no modo de edição ou inclusão
 function openModal(edit = false, index = 0) {
-  modal.classList.add('active')
+  modal.classList.add('active');
 
   modal.onclick = e => {
     if (e.target === modal) {
-      modal.classList.remove('active')
+      modal.classList.remove('active');
     }
-  }
+  };
 
-  // Se estiver em modo de edição, preenche os campos com os dados do item a ser editado
+  // Se for para editar, preenche os campos com os dados existentes
   if (edit) {
-    sNome.value = itens[index].nome
-    sFuncao.value = itens[index].funcao
-    sSalario.value = itens[index].salario
-    id = index
+    sNome.value = itens[index].nome;
+    sFuncao.value = itens[index].funcao;
+    sSalario.value = itens[index].salario;
+    id = itens[index].id;
   } else {
-    sNome.value = ''
-    sFuncao.value = ''
-    sSalario.value = ''
+    sNome.value = '';
+    sFuncao.value = '';
+    sSalario.value = '';
+    id = undefined;
   }
 }
 
-// Função para editar um item
-function editItem(index) {
-  openModal(true, index)
-}
-
-// Função para deletar um item
-function deleteItem(index) {
-  itens.splice(index, 1)
-  setItensBD()
-  loadItens()
-  showAlert('Funcionário removido com sucesso!')
-}
-
-// Função para inserir um item na tabela
+// Função para inserir um funcionário na tabela HTML
 function insertItem(item, index) {
-  let tr = document.createElement('tr')
+  let tr = document.createElement('tr');
 
   tr.innerHTML = `
     <td>${item.nome}</td>
@@ -58,73 +46,92 @@ function insertItem(item, index) {
     <td class="acao">
       <button onclick="deleteItem(${index})"><i class='bx bx-trash'></i></button>
     </td>
-  `
-  tbody.appendChild(tr)
+  `;
+  tbody.appendChild(tr);
+}
+
+// Função para carregar os funcionários da API
+function loadItens() {
+  fetch('http://localhost:3000/funcionarios')
+    .then(response => response.json())
+    .then(data => {
+      itens = data;
+      tbody.innerHTML = '';
+      itens.forEach((item, index) => {
+        insertItem(item, index);
+      });
+    })
+    .catch(error => console.error('Erro ao carregar os funcionários:', error));
+}
+
+// Função para editar um funcionário (abre o modal com os dados)
+function editItem(index) {
+  openModal(true, index);
 }
 
 // Função para validar o salário
 function isSalarioValido(salario) {
-  return !isNaN(salario) && salario > 0
+  return !isNaN(salario) && salario > 0;
+}
+
+// Função para adicionar ou editar um funcionário
+btnSalvar.onclick = e => {
+  e.preventDefault();
+
+  // Validação dos campos
+  if (sNome.value === '' || sFuncao.value === '' || !isSalarioValido(sSalario.value)) {
+    alert('Por favor, preencha todos os campos corretamente.');
+    return;
+  }
+
+  const funcionario = {
+    nome: sNome.value,
+    funcao: sFuncao.value,
+    salario: parseFloat(sSalario.value)
+  };
+
+  const method = id !== undefined ? 'PUT' : 'POST';
+  const url = id !== undefined ? `http://localhost:3000/funcionarios/${id}` : 'http://localhost:3000/funcionarios';
+
+  fetch(url, {
+    method: method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(funcionario)
+  })
+    .then(response => response.json())
+    .then(() => {
+      loadItens();
+      modal.classList.remove('active');
+      showAlert(id !== undefined ? 'Funcionário atualizado com sucesso!' : 'Funcionário adicionado com sucesso!');
+      id = undefined;
+    })
+    .catch(error => console.error('Erro ao salvar funcionário:', error));
+};
+
+// Função para excluir um funcionário
+function deleteItem(index) {
+  const id = itens[index].id;
+
+  fetch(`http://localhost:3000/funcionarios/${id}`, { method: 'DELETE' })
+    .then(response => response.json())
+    .then(() => {
+      loadItens();
+      showAlert('Funcionário removido com sucesso!');
+    })
+    .catch(error => console.error('Erro ao excluir funcionário:', error));
 }
 
 // Função para mostrar alertas visuais
 function showAlert(message) {
-  const alertBox = document.createElement('div')
-  alertBox.className = 'alert-box'
-  alertBox.innerText = message
-  document.body.appendChild(alertBox)
+  const alertBox = document.createElement('div');
+  alertBox.className = 'alert-box';
+  alertBox.innerText = message;
+  document.body.appendChild(alertBox);
 
   setTimeout(() => {
-    document.body.removeChild(alertBox)
-  }, 3000)
+    document.body.removeChild(alertBox);
+  }, 3000);
 }
-
-// Função para salvar (inserir ou editar) os dados no localStorage
-btnSalvar.onclick = e => {
-  e.preventDefault()
-
-  // Validação dos campos
-  if (sNome.value == '' || sFuncao.value == '' || !isSalarioValido(sSalario.value)) {
-    alert("Por favor, preencha todos os campos corretamente.")
-    return
-  }
-
-  // Se estiver em modo de edição, atualiza os dados
-  if (id !== undefined) {
-    itens[id].nome = sNome.value
-    itens[id].funcao = sFuncao.value
-    itens[id].salario = sSalario.value
-    showAlert('Funcionário editado com sucesso!')
-  } else {
-    // Se não, insere um novo item
-    itens.push({
-      'nome': sNome.value,
-      'funcao': sFuncao.value,
-      'salario': sSalario.value
-    })
-    showAlert('Funcionário adicionado com sucesso!')
-  }
-
-  setItensBD() // Atualiza os dados no localStorage
-  modal.classList.remove('active') // Fecha o modal
-  loadItens() // Recarrega os itens na tabela
-  id = undefined // Reseta o ID para futuras inclusões
-}
-
-// Função para carregar os itens do localStorage e exibi-los na tabela
-function loadItens() {
-  itens = getItensBD()
-  tbody.innerHTML = ''
-  itens.forEach((item, index) => {
-    insertItem(item, index)
-  })
-}
-
-// Função para obter os itens do localStorage
-const getItensBD = () => JSON.parse(localStorage.getItem('dbfunc')) ?? []
-
-// Função para salvar os itens no localStorage
-const setItensBD = () => localStorage.setItem('dbfunc', JSON.stringify(itens))
 
 // Carrega os itens quando a página é aberta
-loadItens()
+loadItens();
