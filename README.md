@@ -19,7 +19,7 @@ Siga as etapas abaixo para configurar o ambiente:
 Clone este repositório em sua máquina local:
 
 ```bash
-git clone https://github.com/seu_usuario/cadastro-funcionarios.git
+git clone https://github.com/andreluissantosdecamargo/CadastroFunci.git
 cd cadastro-funcionarios
 ```
 
